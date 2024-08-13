@@ -7,18 +7,31 @@ console.log(titulo);
 
 function submit(){
     let nome = document.getElementById ("nome").value;
-    let cpf = document.getElementById ("idade").value;
+    let idade = document.getElementById ("idade").value;
+    let cpf = document.getElementById ("cpf").value;
 
-    alert("Erro na pagina!");
+    
     console.log(nome);
     console.log(validaCPF(cpf));
 }
 
-function validaCPF (cpf) {            
-    if(cpf = ""){ 
+function validaCPF (cpf) {          
+
+    if(cpf == ""){ 
         alert("Campo CPF não pode ser vazio"); 
         return false; 
     }
+    
+    cpf = cpf.trim();
 
+    if(/[a-zA-Z]/.test (cpf)){
+        alert("CPF não pode conter letras");
+        return false; 
+    }
+
+    if(/[\d.-]+$/.test(cpf)){
+        console.log("O CPF só tem números ou ponto ou hífen");
+        return true;
+    }
     return true; 
 }
