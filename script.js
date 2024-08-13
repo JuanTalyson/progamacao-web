@@ -33,5 +33,16 @@ function validaCPF (cpf) {
         console.log("O CPF só tem números ou ponto ou hífen");
         return true;
     }
+
+    if(cpf.length = 11 && cpf.length != 14){
+        alert("Formarto inválido!");
+        return false;
+    }
+
+    // Continuar validção 
+    // Formatos CPFs válidos
+    // 123.456.789-10
+    // 12345678910
+    
     return true; 
 }
