@@ -1,0 +1,32 @@
+*{
+    margin: 0px;
+}
+
+#titulo{
+    text-align: center;
+    color: purple; 
+}
+
+.rodape{ 
+    text-align: center;
+    background-color: rgb(201, 198, 198);
+    width: 100%;
+    padding: 5px 0px;
+    position: fixed;
+    bottom: 0;  
+}
+
+.entrada-usuario { 
+    border: 1px solid black;
+    width: 50%;
+    margin: auto;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+input {
+    display: block;
+    margin: 1px;
+}s
