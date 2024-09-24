@@ -1,32 +1,52 @@
-*{
-    margin: 0px;
-}
-
-#titulo{
+.data-hora {
     text-align: center;
-    color: purple; 
 }
 
-.rodape{ 
-    text-align: center;
-    background-color: rgb(201, 198, 198);
-    width: 100%;
-    padding: 5px 0px;
-    position: fixed;
-    bottom: 0;  
-}
-
-.entrada-usuario { 
-    border: 1px solid black;
-    width: 50%;
-    margin: auto;
+#btn-dialog-fechar {
     position: absolute;
-    top: 50%;
-    left: 50%;
-    transform: translate(-50%, -50%);
+    top: 0;
+    right: 0;
 }
 
-input {
-    display: block;
-    margin: 1px;
+/* Posicionamento do alerta no topo da página com position fixed */
+#alerta-registro-ponto {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    background-color: #ccc;
+    /* TO-DO: */
+    /* posicionar fora da página */
+    /* pode usar o translate no eixo Y */
+    /* usar um efeito de transição */
+}
+
+#alerta-registro-ponto p {
+    text-align: center;
+    /* TO-DO: */
+    /* Estilizar */
+}
+
+/* TO-DO: */
+/* Adicionar código CSS para alterar a opacidade */
+.hidden {
+    /* TO-DO: */
+    /* enviar para fora da página */
+    opacity: 0;
+}
+
+.show {
+    /* TO-DO: */
+    /* trazer para dentro da página */
+    opacity: 1;
+}
+
+
+#div-btn-bater-ponto {
+    text-align: center;
+}
+
+.data-hora p {
+    font-size: 2rem; /* tamanho relativo */
+    /* ??? */
 }

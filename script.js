@@ -1,74 +1,181 @@
-let dom = document
+// TO-DO:
+// Organizar código-fonte,
 
-let titulo = document.getElementById("titulo").value;
-let nome = document.getElementById("nome").value;
+const diaSemana = document.getElementById("dia-semana");
+const diaMesAno = document.getElementById("dia-mes-ano");
+const horaMinSeg = document.getElementById("hora-min-seg");
 
-console.log(titulo); 
+const btnBaterPonto = document.getElementById("btn-bater-ponto");
+btnBaterPonto.addEventListener("click", register);
 
-function submit(){
-    let nome = document.getElementById ("nome").value;
-    let idade = document.getElementById ("idade").value;
-    let cpf = document.getElementById ("cpf").value;
+const dialogPonto = document.getElementById("dialog-ponto");
 
-    
-    console.log(nome);
-    console.log(validaCPF(cpf));
+const btnDialogFechar = document.getElementById("btn-dialog-fechar");
+btnDialogFechar.addEventListener("click", () => {
+    dialogPonto.close();
+});
+
+
+let registerLocalStorage = getRegisterLocalStorage();
+
+const dialogData = document.getElementById("dialog-data");
+const dialogHora = document.getElementById("dialog-hora");
+
+const divAlertaRegistroPonto = document.getElementById("alerta-registro-ponto");
+
+
+diaSemana.textContent = getWeekDay();
+diaMesAno.textContent = getCurrentDate();
+
+
+// TO-DO:
+// Por que esta função não retorna a localização?
+// [doc]
+function getCurrentPosition() {
+    navigator.geolocation.getCurrentPosition((position) => {
+        return position;
+    });
 }
 
-function validaCPF (cpf) {          
 
-    if(cpf == ""){ 
-        alert("Campo CPF não pode ser vazio"); 
-        return false; 
+const typeRegister = document.getElementById("tipos-ponto");
+
+const btnDialogBaterPonto = document.getElementById("btn-dialog-bater-ponto");
+btnDialogBaterPonto.addEventListener("click", () => {
+
+    let lastTypeRegister = localStorage.getItem("lastTypeRegister");
+
+    // TO-DO:
+    // Pq o select não está com a option correspondente?
+    if(lastTypeRegister == "entrada") {
+        console.log("lastTypeRegister é entrada");
+        typeRegister.value = "intervalo";
     }
+    if(lastTypeRegister == "intervalo") {
+        typeRegister.value = "volta-intervalo";
+    }
+    if(lastTypeRegister == "volta-intervalo") {
+        typeRegister.value = "saida";
+    }
+    if(lastTypeRegister == "saida") {
+        typeRegister.value = "entrada"
+    }
+
+    let ponto = {
+        "data": getCurrentDate(),
+        "hora": getCurrentHour(),
+        "localizacao": getCurrentPosition(),
+        "id": 1,
+        "tipo": typeRegister.value
+    }
+
+    console.log(ponto);
+
+    saveRegisterLocalStorage(ponto);
+
+    localStorage.setItem("lastTypeRegister", typeRegister.value);
+    localStorage.setItem("lastDateRegister", ponto.data);
+    localStorage.setItem("lastTimeRegister", ponto.hora);
+
+    dialogPonto.close();
+
+    // TO-DO:
+    // CRIAR UM ALERTA NO TOPO DA PÁGINA PRINCIPAL PARA CONFIRMAR O REGISTRO DE PONTO
+    // DEVE FICAR ABERTO POR 3 SEGUNDOS E DEVE TER UM EFEITO DE TRANSIÇÃO
+    // DEVE PODER SER FECHADO PELO USUÁRIO QUE NÃO QUISER AGUARDAR 3s
+    // DEVE MOSTRAR UMA MENSAGEM DE SUCESSO AO REGISTRAR O PONTO
+    // CASO OCORRA ALGUM ERRO, MOSTRAR NO ALERTA 
+    // AS CORES DEVEM SER DIFERENTES EM CASO DE SUCESSO/ERRO/ALERTA
+
+    divAlertaRegistroPonto.classList.remove("hidden");
+    divAlertaRegistroPonto.classList.add("show");
     
-    cpf = cpf.trim();
+    // TO-DO:
+    // fazer um efeito de transição para o alerta
 
-    if(/[a-zA-Z]/.test (cpf)){
-        alert("CPF não pode conter letras");
-        return false; 
+    setTimeout(() => {
+        divAlertaRegistroPonto.classList.remove("show");
+        divAlertaRegistroPonto.classList.add("hidden");
+    }, 5000);
+
+});
+
+
+function saveRegisterLocalStorage(register) {
+    registerLocalStorage.push(register); // Array
+    localStorage.setItem("register", JSON.stringify(registerLocalStorage));
+} 
+
+
+// Esta função deve retornar sempre um ARRAY, mesmo que seja vazio
+function getRegisterLocalStorage() {
+    let registers = localStorage.getItem("register");
+
+    if(!registers) {
+        return [];
     }
 
-    if(!/^[\d.-]+$/.test(cpf)){
-        console.log("O CPF só tem números ou ponto ou hífen");
-        return false;
-    }
-
-    if(cpf.length != 11 && cpf.length != 14){
-        alert("Formarto inválido!");
-        return false;
-    }
-    
-    // Interar 9 primeiros dígitos, respeitando a seguinte regra: 
-    let soma = 0;
-
-    for(let i = 1; i <=9; i++) {
-        // console.log(cpf.charAt(i-1));
-        soma = soma + (cpf.charAt(i-1) * (10 - (i-1)));
-        // recuperar o caractere i-1 da string cpf
-    }
-    console.log(soma);
-    let resto = soma % 11;
-    if(resto < 2 ){
-        if(cpf.charAt(9) != 0){
-            alert("CPF inválido!");
-            return false;
-        // verificar se o primeiro digito verificador 
-        // (10º digito do cpf) é zero 
-        // 10º digito do cpf é recuperado com o cpf.charAt(9)
-        }
-        return true;
-    }
-
-    let digitoVerificador = 1 - resto;
-
-   
-    
-
-    // Continuar validção 
-    // Formatos CPFs válidos
-    // 123.456.789-10
-    // 12345678910
-    
-    return true; 
+    return JSON.parse(registers); // converte de JSON para Array
 }
+
+
+// TO-DO:
+// alterar o nome da função
+function register() {
+    // TO-DO:
+    // Atualizar hora a cada segundo e data 00:00:00
+    dialogData.textContent = "Data: " + getCurrentDate();
+    dialogHora.textContent = "Hora: " + getCurrentHour();
+
+
+    // TO-DO:
+    // Verificar se há último registro. Se não houver, tratar o que será escrito na base do dialog
+    // Opções: escrever "Sem registros anteriores" ou não escrever nada
+
+
+    let lastRegisterText = "Último registro: " + localStorage.getItem("lastDateRegister") + " - " + localStorage.getItem("lastTimeRegister") + " | " + localStorage.getItem("lastTypeRegister")
+    document.getElementById("dialog-last-register").textContent = lastRegisterText;
+
+    dialogPonto.showModal();
+
+    console.log(localStorage.getItem("lastTypeRegister"));
+}
+
+function getWeekDay() {
+    const date = new Date();
+    let days = ["Domingo", "Segunda-feira", "Terça-feira", "Quarta-feira", "Quinta-feira", "Sexta-feira", "Sábado"];
+    return days[date.getDay()];
+}
+
+function getCurrentHour() {
+    const date = new Date();
+    return String(date.getHours()).padStart(2, '0') + ":" + String(date.getMinutes()).padStart(2, '0') + ":" + String(date.getSeconds()).padStart(2, '0');
+}
+
+
+function getCurrentDate() {
+    // TO-DO:
+    // Alterar a solução para considerar padStart ou slice
+    // Considerar formatos diferentes da data, conforme localização
+    // do usuário dd/mm/aaaa, mm/dd/aaaa, aaaa/mm/dd, aaaa.mm.dd
+    // Verificar se no Date() há algum método que possa auxiliar
+    // locale
+    const date = new Date();
+    let month = date.getMonth();
+    let day = date.getDate();
+    if (day < 10) {
+        day = "0" + day
+    }
+    if (month < 10) {
+        month = "0" + (month + 1)
+    }
+    return day + "/" + month + "/" + date.getFullYear();
+}
+
+function printCurrentHour() {
+    horaMinSeg.textContent = getCurrentHour();
+}
+
+
+printCurrentHour();
+setInterval(printCurrentHour, 1000);
